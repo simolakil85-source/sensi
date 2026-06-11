@@ -1,24 +1,32 @@
-# تحديد هندسة المعالج (آيفون يدعم arm64)
-ARCHS = arm64
-# تحديد إصدار النظام
-TARGET := iphone:clang:latest:12.0
-# اسم العملية ديال اللعبة (باش المود يخدم فيها بوحدها)
-INSTALL_TARGET_PROCESSES = FreeFire
+# If you want to compile for arm64e, you'll need a macOS device or a arm64e device that's able to compile for arm64e.
+# Also, you'll have to remove '#import "KittyMemory/initializer_list"' from Menu.h for it being able to compile this menu.
+# Once done that, uncomment the "#arm64e" by removing the "#"
 
-# تضمين إعدادات Theos الأساسية
+ARCHS = arm64 #arm64e
+
 include $(THEOS)/makefiles/common.mk
 
-# اسم المود ديالك
-TWEAK_NAME = SensiMod
+TWEAK_NAME = @@PROJECTNAME@@
 
-# الملفات اللي خاصها تتجمع (Tweak.xm هو الأساس)
-SensiMod_FILES = Tweak.xm
-# إضافة دعم الـ KittyMemory (ضروري إلا كنتي كاتخدم بيه)
-SensiMod_CCFLAGS = -std=c++11 -fno-rtti -fno-exceptions -DNDEBUG
-# تفعيل الـ ARC باش ما يوقعوش كراشات
-SensiMod_CFLAGS = -fobjc-arc
-# المكتبات اللازمة
-SensiMod_LIBRARIES = substrate
+@@PROJECTNAME@@_CCFLAGS = -std=c++11 -fno-rtti -fno-exceptions -DNDEBUG
+CFLAGS = -fobjc-arc #-w #-Wno-deprecated -Wno-deprecated-declarations
+@@PROJECTNAME@@_FILES = Tweak.xm Menu.mm SwitchesTemplate.mm $(wildcard KittyMemory/*.cpp) $(wildcard SCLAlertView/*.m)
 
-# أمر البناء النهائي
+@@PROJECTNAME@@_LIBRARIES += substrate
+# GO_EASY_ON_ME = 1
+
+DEBUG = 0
+FINALPACKAGE = 1
+FOR_RELEASE = 1
+
 include $(THEOS_MAKE_PATH)/tweak.mk
+
+# We need this for the menu icon etc
+BUNDLE_NAME = @@PROJECTNAME@@_BUNDLE
+@@PROJECTNAME@@_BUNDLE_INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries
+include $(THEOS)/makefiles/bundle.mk
+
+after-install::
+	install.exec "killall -9 @@BINARYNAME@@ || :"
+
+include $(THEOS_MAKE_PATH)/aggregate.mk
