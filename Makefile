@@ -11,5 +11,8 @@ SensiMod_CFLAGS = -fobjc-arc
 SensiMod_LIBRARIES = substrate
 
 include $(THEOS_MAKE_PATH)/tweak.mk
+after-package::
+	@rm -rf .theos
+
 
 
