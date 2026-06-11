@@ -1,0 +1,20 @@
+name: Build Mod
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Theos
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          git clone --recursive https://github.com/theos/theos.git /opt/theos
+      - name: Build
+        run: |
+          export THEOS=/opt/theos
+          make
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Mod-Dylib
+          path: ./.theos/obj/*.dylib
