@@ -1,0 +1,16 @@
+name: Build Mod
+on: [push]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: |
+          git clone https://github.com/theos/theos.git /opt/theos
+          export THEOS=/opt/theos
+          make
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Mod-Dylib
+          path: ./.theos/obj/debug/*.dylib
