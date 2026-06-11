@@ -1,1 +1,7 @@
-{ Filter = { Bundles = ( "@@FILTER@@" ); }; }
+{
+    Filter = {
+        Bundles = (
+            "com.dts.freefireth"
+        );
+    };
+}
