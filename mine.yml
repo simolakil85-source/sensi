@@ -1,0 +1,16 @@
+name: Build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Build Tweak
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/build -w /build -e THEOS=/theos --entrypoint /bin/bash qnblackcat/theos:latest -c "make package"
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SensiMod
+          path: packages/*.deb
